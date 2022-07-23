@@ -14,13 +14,13 @@ public class GameMain {
 		this.stage = 0;
 		this.cardDeck = new Card[43];
 		for (int i = 0; i < 25; i++) {
-			this.cardDeck[i] = new Card("뱅!");
+			this.cardDeck[i] = Card.BANG;
 		}
 		for (int i = 25; i < 37; i++) {
-			this.cardDeck[i] = new Card("빗나감!");
+			this.cardDeck[i] = Card.MiSSED;
 		}
 		for (int i = 37; i < 43; i++) {
-			this.cardDeck[i] = new Card("맥주");
+			this.cardDeck[i] = Card.BEER;
 		}
 
 		for (int i = 0; i < 1000; i++) {
@@ -74,6 +74,7 @@ public class GameMain {
 			System.out.print("카드를 선택하세요 : ");
 			input = ScanUtil.nextInt();
 			this.hero.useCard(this.enemyPool[stage], input);
+
 //			if (this.hero.life < this.hero.hand.length) {
 //				System.out.printf("카드를 %d장 버려야 합니다\n",
 //						this.hero.hand.length - this.hero.life);
