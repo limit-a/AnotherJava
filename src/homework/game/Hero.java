@@ -7,7 +7,6 @@ public class Hero extends Player {
 //	String name;
 //	int life;
 //	int maxLife;
-//	int handCount;
 //
 //	Card[] hand;
 
@@ -18,7 +17,6 @@ public class Hero extends Player {
 //		this.name = name;
 //		this.life = life;
 //		this.maxLife = maxLife;
-//		this.handCount = 0;
 //		this.hand = new Card[life];
 		super(name, life, maxLife);
 	}

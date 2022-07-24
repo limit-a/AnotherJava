@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public enum Card {
 
-	BANG("뱅!"), MiSSED("빗나감!"), BEER("맥주");
+	BANG("뱅!"), MISSED("빗나감!"), BEER("맥주");
 
 	public final String name;
 
@@ -23,10 +23,10 @@ public enum Card {
 			System.out.println(player.name + "의 핸드");
 			System.out.println(Arrays.toString(player.hand));
 			for (int i = 0; i < player.hand.length; i++) {
-				if (Card.MiSSED.name.equals(player.hand[i].name)) {
+				if (Card.MISSED.equals(player.hand[i])) {
 					System.out.println(
 							(i + 1) + "번째 빗나감 확인 : " + player.hand[i].name);
-					player.disCard(i + 1);
+					player.disCard(i);
 					System.out.println(Arrays.toString(player.hand));
 					System.out.println(player.name + "의 체력 " + player.life);
 					break missed;

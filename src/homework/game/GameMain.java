@@ -17,7 +17,7 @@ public class GameMain {
 			this.cardDeck[i] = Card.BANG;
 		}
 		for (int i = 25; i < 37; i++) {
-			this.cardDeck[i] = Card.MiSSED;
+			this.cardDeck[i] = Card.MISSED;
 		}
 		for (int i = 37; i < 43; i++) {
 			this.cardDeck[i] = Card.BEER;
@@ -43,7 +43,6 @@ public class GameMain {
 			for (int j = 0; j < this.enemyPool[i].life; j++) {
 				this.enemyPool[i].hand[j] = this.cardDeck[RandomUtil.random(0,
 						this.cardDeck.length - 1)];
-				this.enemyPool[i].handCount++;
 			}
 		}
 
@@ -51,7 +50,6 @@ public class GameMain {
 		for (int i = 0; i < this.hero.life; i++) {
 			this.hero.hand[i] = this.cardDeck[RandomUtil.random(0,
 					RandomUtil.random(0, this.cardDeck.length - 1))];
-			this.hero.handCount++;
 		}
 
 	}
@@ -65,6 +63,7 @@ public class GameMain {
 	public void battle() {
 
 		System.out.println("===전투 시작=====");
+		System.out.println(cardDeck.length);
 		System.out.printf("%s와 싸웁니다.\n", this.enemyPool[this.stage].name);
 		int input = 0;
 		battle: while (true) {
