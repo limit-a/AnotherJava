@@ -33,7 +33,7 @@ public abstract class Player {
 			this.hand = new Card[this.hand.length + 2];
 			this.hand = temp;
 			this.drawed = true;
-			System.out.printf("%s(이)가 카드를 두 장 드로우 했습니다.\n", this.name);
+			System.out.printf("%s(이)가 카드를 두 장 뽑습니다.\n", this.name);
 			TimeUtil.secondsSleep(3);
 		}
 	}

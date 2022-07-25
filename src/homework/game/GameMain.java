@@ -55,10 +55,11 @@ public class GameMain {
 	}
 
 	public static void clearScreen() {
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 50; i++) {
 			System.out.println();
 		}
 	}
+
 
 	public void battle() {
 
@@ -68,8 +69,10 @@ public class GameMain {
 		TimeUtil.secondsSleep(3);
 		battle: while (true) {
 			clearScreen();
+			// 영웅 드로우
 			this.hero.drawCard(this.cardDeck);
 			System.out.println();
+			// 영웅 정보창
 			this.hero.showInfo();
 			System.out.println();
 			System.out.println(
@@ -77,8 +80,10 @@ public class GameMain {
 			System.out.println(
 					"---적의 체력--- : " + this.enemyPool[this.stage].life);
 			System.out.println();
+			// 영웅 카드 선택
 			System.out.print("카드를 선택하세요 : ");
 			int input = ScanUtil.nextInt();
+			// 영웅 카드 선택 스위치문
 			switch (this.hero.hand[input - 1]) {
 			case MISSED:
 				clearScreen();
@@ -105,8 +110,10 @@ public class GameMain {
 			default:
 				break;
 			}
+			// 영웅 드로우 체크
 			this.hero.drawed = false;
 
+			// 영웅 체력보다 많은 카드 버리기
 			if (this.hero.life < this.hero.hand.length) {
 				System.out.printf("카드를 %d장 버려야 합니다\n",
 						this.hero.hand.length - this.hero.life);
@@ -120,6 +127,7 @@ public class GameMain {
 			}
 
 			clearScreen();
+			// 적 라이프 체크
 			if (this.enemyPool[this.stage].life <= 0) {
 				clearScreen();
 				System.out.printf("%s(이)가 죽었습니다.\n",
@@ -129,10 +137,13 @@ public class GameMain {
 				this.stage++;
 				break battle;
 			}
+			// 적 드로우
 			this.enemyPool[this.stage].drawCard(this.cardDeck);
 			System.out.println();
+			// 적 카드 선택
 			int randomIndex = RandomUtil.random(0,
 					this.enemyPool[this.stage].hand.length - 1);
+			// 적 카드 선택 스위치문
 			switch (this.enemyPool[this.stage].hand[randomIndex]) {
 			case MISSED:
 				continue battle;
@@ -154,15 +165,18 @@ public class GameMain {
 			default:
 				break;
 			}
+			// 적 드로우 체크
 			this.enemyPool[this.stage].drawed = false;
 
+			// 적 체력보다 많은 카드 버리기
 			if (this.enemyPool[this.stage].life < this.enemyPool[this.stage].hand.length) {
 				System.out.printf("%s(이)가 카드를 %d장 버립니다\n",
 						this.enemyPool[this.stage].name,
 						this.enemyPool[this.stage].hand.length
 								- this.enemyPool[this.stage].life);
-				for (int i = 0; i < this.hero.hand.length
-						- this.hero.life; i++) {
+				TimeUtil.secondsSleep(3);
+				for (int i = 0; i < this.enemyPool[this.stage].hand.length
+						- this.enemyPool[this.stage].life; i++) {
 					this.hero.disCard(RandomUtil.random(0,
 							this.enemyPool[this.stage].hand.length - 1));
 				}

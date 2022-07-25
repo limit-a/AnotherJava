@@ -27,12 +27,14 @@ public enum Card {
 				if (Card.MISSED.equals(player.hand[i])) {
 					System.out.printf("%s(이)가 빗나감!을 사용했습니다.\n", player.name);
 					player.disCard(i);
+					System.out.println();
 					TimeUtil.secondsSleep(3);
 					break missed;
 				}
 			}
 			System.out.printf("%s(이)가 공격받아 체력이 1 내려갔습니다.\n", player.name);
 			player.life--;
+			System.out.println();
 			TimeUtil.secondsSleep(3);
 			break;
 
