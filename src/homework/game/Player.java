@@ -39,12 +39,16 @@ public abstract class Player {
 	}
 
 	public void disCard(int index) {
-		Card[] temp = new Card[this.hand.length - 1];
-		for (int i = 0; i < temp.length; i++) {
-			temp[i] = i >= index ? this.hand[i + 1] : this.hand[i];
+		if ((this.hand.length - 1) <= 0) {
+			System.out.printf("더이상 카드를 버릴 수 없습니다.");
+		} else {
+			Card[] temp = new Card[this.hand.length - 1];
+			for (int i = 0; i < temp.length; i++) {
+				temp[i] = i >= index ? this.hand[i + 1] : this.hand[i];
+			}
+			this.hand = new Card[this.hand.length - 1];
+			this.hand = temp;
 		}
-		this.hand = new Card[this.hand.length - 1];
-		this.hand = temp;
 	}
 
 	public void useCard(Player player, int index) {
