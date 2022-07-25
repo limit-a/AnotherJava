@@ -55,56 +55,145 @@ public class GameMain {
 	}
 
 	public static void clearScreen() {
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 20; i++) {
 			System.out.println();
 		}
 	}
 
 	public void battle() {
 
-		System.out.println("===전투 시작=====");
-		System.out.println(cardDeck.length);
-		System.out.printf("%s와 싸웁니다.\n", this.enemyPool[this.stage].name);
-		int input = 0;
+		System.out.println("==========전투 시작==========");
+		System.out.println();
+		System.out.printf("%s와(과) 싸웁니다.\n", this.enemyPool[this.stage].name);
+		TimeUtil.secondsSleep(3);
 		battle: while (true) {
+			clearScreen();
 			this.hero.drawCard(this.cardDeck);
-			System.out.println("카드를 두 장 드로우 했습니다.");
+			System.out.println();
 			this.hero.showInfo();
+			System.out.println();
+			System.out.println(
+					"---적의 이름--- : " + this.enemyPool[this.stage].name);
+			System.out.println(
+					"---적의 체력--- : " + this.enemyPool[this.stage].life);
+			System.out.println();
 			System.out.print("카드를 선택하세요 : ");
-			input = ScanUtil.nextInt();
-			this.hero.useCard(this.enemyPool[stage], input);
+			int input = ScanUtil.nextInt();
+			switch (this.hero.hand[input - 1]) {
+			case MISSED:
+				clearScreen();
+				System.out.println("빗나감 카드는 사용할 수 없습니다.");
+				TimeUtil.secondsSleep(3);
+				continue battle;
+			case BANG:
+				clearScreen();
+				System.out.printf("%s(이)가 뱅!을 사용했습니다.\n", this.hero.name);
+				System.out.println();
+				this.hero.useCard(this.enemyPool[stage], input - 1);
+				break;
+			case BEER:
+				clearScreen();
+				if (this.hero.life == this.hero.maxLife) {
+					System.out.println("맥주 카드를 사용할 수 없습니다.");
+					System.out.println();
+					TimeUtil.secondsSleep(3);
+				} else {
+					this.hero.useCard(this.hero, input - 1);
+				}
+				continue battle;
 
-//			if (this.hero.life < this.hero.hand.length) {
-//				System.out.printf("카드를 %d장 버려야 합니다\n",
-//						this.hero.hand.length - this.hero.life);
-//				for (int i = 0; i < this.hero.hand.length
-//						- this.hero.life; i++) {
-//					this.hero.showInfo();
-//					System.out.print("카드를 선택하세요 : ");
-//					input = ScanUtil.nextInt();
-//					this.hero.disCard(input);
-//				}
-//			}
-			this.stage++;
-			break battle;
+			default:
+				break;
+			}
+			this.hero.drawed = false;
+
+			if (this.hero.life < this.hero.hand.length) {
+				System.out.printf("카드를 %d장 버려야 합니다\n",
+						this.hero.hand.length - this.hero.life);
+				for (int i = 0; i < this.hero.hand.length
+						- this.hero.life; i++) {
+					this.hero.showInfo();
+					System.out.print("카드를 선택하세요 : ");
+					input = ScanUtil.nextInt();
+					this.hero.disCard(input - 1);
+				}
+			}
+
+			clearScreen();
+			if (this.enemyPool[this.stage].life <= 0) {
+				clearScreen();
+				System.out.printf("%s(이)가 죽었습니다.\n",
+						this.enemyPool[this.stage].name);
+				System.out.println();
+				TimeUtil.secondsSleep(3);
+				this.stage++;
+				break battle;
+			}
+			this.enemyPool[this.stage].drawCard(this.cardDeck);
+			System.out.println();
+			int randomIndex = RandomUtil.random(0,
+					this.enemyPool[this.stage].hand.length - 1);
+			switch (this.enemyPool[this.stage].hand[randomIndex]) {
+			case MISSED:
+				continue battle;
+			case BANG:
+				System.out.printf("%s(이)가 뱅!을 사용했습니다.\n",
+						this.enemyPool[this.stage].name);
+				System.out.println();
+				this.enemyPool[this.stage].useCard(this.hero, randomIndex);
+				break;
+			case BEER:
+				if (this.enemyPool[this.stage].life == this.enemyPool[this.stage].maxLife) {
+				} else {
+					this.enemyPool[this.stage]
+							.useCard(this.enemyPool[this.stage], randomIndex);
+					System.out.println();
+				}
+				continue battle;
+
+			default:
+				break;
+			}
+			this.enemyPool[this.stage].drawed = false;
+
+			if (this.enemyPool[this.stage].life < this.enemyPool[this.stage].hand.length) {
+				System.out.printf("%s(이)가 카드를 %d장 버립니다\n",
+						this.enemyPool[this.stage].name,
+						this.enemyPool[this.stage].hand.length
+								- this.enemyPool[this.stage].life);
+				for (int i = 0; i < this.hero.hand.length
+						- this.hero.life; i++) {
+					this.hero.disCard(RandomUtil.random(0,
+							this.enemyPool[this.stage].hand.length - 1));
+				}
+			}
+
 		}
 	}
 
 	public void start() {
-		System.out.println("=====게임 시작======");
+		System.out.println("===========게임 시작===========");
+		System.out.println();
 		int input = 0;
 		game: while (true) {
 			if (this.stage > 3) {
-				System.out.println("엔딩");
+				System.out.println("THANK YOU FOR PLAYING.");
+				System.out.println();
+				TimeUtil.secondsSleep(3);
+				System.out.println("GAMA OVER");
+				System.out.println();
+				TimeUtil.secondsSleep(3);
 				break game;
 			}
 			System.out.println("1. 내 정보    2. 전투    0. 종료");
+			System.out.println();
 			System.out.print(">>> ");
 			input = ScanUtil.nextInt();
 			switch (input) {
 			case 1:
 				clearScreen();
 				this.hero.showInfo();
+				System.out.println();
 				break;
 			case 2:
 				clearScreen();
@@ -113,6 +202,7 @@ public class GameMain {
 			case 0:
 				clearScreen();
 				System.out.println("게임을 종료합니다.");
+				System.out.println();
 				break game;
 
 			default:

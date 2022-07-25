@@ -12,43 +12,39 @@ public enum Card {
 		this.name = "";
 	}
 
+	Card(String name) {
+		this.name = name;
+	}
+
 	public String toString() {
 		return this.name;
 	}
 
 	public void activeCard(Player player) {
-		System.out.println("선택한 카드 : " + this.name);
 		missed: switch (this.name) {
 		case "뱅!":
-			System.out.println(player.name + "의 핸드");
-			System.out.println(Arrays.toString(player.hand));
 			for (int i = 0; i < player.hand.length; i++) {
 				if (Card.MISSED.equals(player.hand[i])) {
-					System.out.println(
-							(i + 1) + "번째 빗나감 확인 : " + player.hand[i].name);
+					System.out.printf("%s(이)가 빗나감!을 사용했습니다.\n", player.name);
 					player.disCard(i);
-					System.out.println(Arrays.toString(player.hand));
-					System.out.println(player.name + "의 체력 " + player.life);
+					TimeUtil.secondsSleep(3);
 					break missed;
 				}
 			}
-			System.out.println("빗나감 없음");
+			System.out.printf("%s(이)가 공격받아 체력이 1 내려갔습니다.\n", player.name);
 			player.life--;
-			System.out.println(Arrays.toString(player.hand));
-			System.out.println(player.name + "의 체력 " + player.life);
+			TimeUtil.secondsSleep(3);
 			break;
 
 		case "맥주":
-
+			System.out.printf("%s(이)가 맥주를 사용해 체력을 1 올렸습니다.\n", player.name);
+			player.life++;
+			TimeUtil.secondsSleep(3);
 			break;
 
 		default:
 			break;
 		}
-	}
-
-	Card(String name) {
-		this.name = name;
 	}
 
 }
