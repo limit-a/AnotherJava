@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public enum Card {
 
-	BANG("뱅!"), MISSED("빗나감!"), BEER("맥주");
+	BANG("뱅!"), MISSED("빗나감!"), BEER("맥주"), PANIC("강탈!");
 
 	public final String name;
 
@@ -17,30 +17,41 @@ public enum Card {
 	}
 
 	public String toString() {
-		return this.name;
+		return name;
 	}
 
-	public void activeCard(Player player) {
-		missed: switch (this.name) {
+	public void activeCard(Player oneself, Player opponent) {
+		switch (name) {
 		case "뱅!":
-			for (int i = 0; i < player.hand.length; i++) {
-				if (Card.MISSED.equals(player.hand[i])) {
-					System.out.printf("%s(이)가 빗나감!을 사용했습니다.\n", player.name);
-					player.disCard(i);
+			for (int i = 0; i < opponent.hand.length; i++) {
+				if (Card.MISSED.equals(opponent.hand[i])) {
+					System.out.printf("%s(이)가 빗나감!을 사용했습니다.\n", opponent.name);
+					opponent.disCard(i);
 					System.out.println();
 					TimeUtil.secondsSleep(3);
-					break missed;
+					break;
 				}
 			}
-			System.out.printf("%s(이)가 공격받아 체력이 1 내려갔습니다.\n", player.name);
-			player.life--;
+			System.out.printf("%s(이)가 공격받아 체력이 1 내려갔습니다.\n", opponent.name);
+			opponent.life--;
 			System.out.println();
 			TimeUtil.secondsSleep(3);
 			break;
 
 		case "맥주":
-			System.out.printf("%s(이)가 맥주를 사용해 체력을 1 올렸습니다.\n", player.name);
-			player.life++;
+			System.out.printf("%s(이)가 맥주를 사용해 체력을 1 올렸습니다.\n", oneself.name);
+			oneself.life++;
+			TimeUtil.secondsSleep(3);
+			break;
+
+		case "강탈!":
+			int index = RandomUtil.random(0, opponent.hand.length - 1);
+			System.out.println("핸드"+opponent.hand.length);
+			System.out.println("뽑기" + index);
+			oneself.panicCard(oneself, opponent, index);
+			opponent.disCard(index);
+			System.out.printf("%s가 %s의 %s를 강탈했습니다.\n", oneself.name,
+					opponent.name, opponent.hand[index]);
 			TimeUtil.secondsSleep(3);
 			break;
 
