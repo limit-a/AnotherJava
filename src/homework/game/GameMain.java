@@ -25,9 +25,11 @@ public class GameMain {
 		for (int i = 37; i < 43; i++) {
 			this.cardDeck[i] = Card.BEER;
 		}
-		for (int i = 44; i < 47; i++) {
+		for (int i = 43; i < 47; i++) {
 			this.cardDeck[i] = Card.PANIC;
 		}
+
+//		System.out.println(Arrays.toString(cardDeck));
 
 		for (int i = 0; i < 10000; i++) {
 			Card temp = this.cardDeck[this.cardDeck.length - 1];
@@ -66,178 +68,127 @@ public class GameMain {
 		}
 	}
 
-	public int unableTurn(Player player) {
-		int check = 0;
-		for (int i = 0; i < hero.hand.length; i++) {
-			if (Card.MISSED.equals(hero.hand[i])
-					|| Card.BEER.equals(hero.hand[i])) {
-				check++;
-			}
-		}
-		return check;
-	}
+//	public int unableTurn(Player player) {
+//		int check = 0;
+//		for (int i = 0; i < hero.hand.length; i++) {
+//			if (Card.MISSED.equals(hero.hand[i])
+//					|| Card.BEER.equals(hero.hand[i])) {
+//				check++;
+//			}
+//		}
+//		return check;
+//	}
 
 	public void battle() {
 
-		System.out.println("==========전투 시작==========");
-		System.out.println();
-		System.out.printf("%s와(과) 싸웁니다.\n", enemyPool[stage].name);
-		TimeUtil.secondsSleep(3);
+		System.out.printf("%s와 싸웁니다.\n", this.enemyPool[this.stage].name);
 
-		battle: while (true) {
-			if (!turn) {
-				heroTurn: while (true) {
-					clearScreen();
-					if (hero.life <= 0) {
-						clearScreen();
-						System.out.printf("%s(이)가 죽었습니다.\n", hero.name);
-						System.out.println();
-						TimeUtil.secondsSleep(3);
-						break battle;
-					}
-					// 영웅이 드로우
-					hero.drawCard(cardDeck);
-					TimeUtil.secondsSleep(3);
-					// 영웅의 정보창
-					hero.showInfo();
-					System.out.println();
-					// 영웅이 카드를 사용 못하는 상황 체크
-					if (hero.hand.length == unableTurn(hero)) {
-						System.out.println("영웅이 카드를 사용할 수 없습니다.");
-						this.turn = true;
-						TimeUtil.secondsSleep(3);
-						break heroTurn;
-					}
-					System.out
-							.println("---적의 이름--- : " + enemyPool[stage].name);
-					System.out
-							.println("---적의 체력--- : " + enemyPool[stage].life);
-					System.out.println();
-					// 영웅이 카드 선택
-					System.out.print("카드를 선택하세요 : ");
-					int input = ScanUtil.nextInt();
-					// 영웅의 카드를 선택하는 스위치문
-					switch (hero.hand[input - 1]) {
-					case MISSED:
-						clearScreen();
-						System.out.println("빗나감 카드는 사용할 수 없습니다.");
-						TimeUtil.secondsSleep(3);
-						continue heroTurn;
-					case BANG:
-						clearScreen();
-						System.out.printf("%s(이)가 뱅!을 사용했습니다.\n", hero.name);
-						System.out.println();
-						hero.useCard(hero, enemyPool[stage], input - 1);
-						break;
-					case BEER:
-						clearScreen();
-						if (hero.life == hero.maxLife) {
-							System.out.println("체력이 충만하여 맥주 카드를 사용할 수 없습니다.");
-							System.out.println();
-							TimeUtil.secondsSleep(3);
-						} else {
-							hero.useCard(hero, enemyPool[stage], input - 1);
-						}
-						continue heroTurn;
-					case PANIC:
-						clearScreen();
-						hero.useCard(hero, enemyPool[stage], input - 1);
-						continue heroTurn;
+		while (true) {
 
-					default:
-						break;
-					}
-					// 영웅이 드로우를 했는지 체크
-					this.hero.drawed = false;
+			TimeUtil.secondsSleep(3);
 
-					// 영웅이 체력보다 많은 카드 버리기
-					if (hero.life < hero.hand.length) {
-						System.out.println("카드를 버려야 합니다");
-						for (int i = 0; i < hero.hand.length - hero.life; i++) {
-							hero.showInfo();
-							System.out.print("카드를 선택하세요 : ");
-							int inputLife = ScanUtil.nextInt();
-							hero.disCard(inputLife - 1);
-						}
-					}
+			Player inputPlayer = !this.turn ? this.hero
+					: this.enemyPool[this.stage];
+
+			if (inputPlayer.life <= 0) {
+				clearScreen();
+				System.out.printf("%s가 죽었습니다.\n", inputPlayer.name);
+				stage++;
+				TimeUtil.secondsSleep(3);
+				break;
+			}
+
+//			페이즈 1
+//			덱에서 카드를 2장 가져온다. 자신의 캐릭터가 카드 가져오기 관련 특수 능력이 있을 경우 특수 능력대로 카드를 가져온다.
+
+			clearScreen();
+			inputPlayer.drawCard(cardDeck);
+			System.out.printf("%s(이)가 카드를 두 장 뽑습니다.\n", inputPlayer.name);
+			TimeUtil.secondsSleep(3);
+			if (this.hero.equals(inputPlayer)) {
+				for (int i = 0; i < inputPlayer.hand.length; i++) {
+					System.out.printf("%d. %-6s", (i + 1),
+							inputPlayer.hand[i].name);
+				}
+				System.out.println();
+			}
+			TimeUtil.secondsSleep(3);
+
+//			페이즈 2
+//			패의 카드를 쓸 수 있다면 원하는 만큼 사용한다.
+//			기본적으론 사용 횟수에 제한은 없지만, 뱅은 캐릭터 능력이나 기타 장비 카드 등이 없다면 한 턴에 한 장만 사용 가능하고,
+//			빗나감처럼 자신의 턴에 사용할 수 없는 카드 등 때문에 손에 든 카드를 사용할 수 없는 경우가 생긴다. 
+//			전략적으로 카드를 선택해서 남길 수도 있다.
+
+			int unableTurnCheck = 0;
+			for (int i = 0; i < inputPlayer.hand.length; i++) {
+				if (Card.MISSED.equals(inputPlayer.hand[i])
+						|| Card.BEER.equals(inputPlayer.hand[i])) {
+					unableTurnCheck++;
+				}
+			}
+			if (inputPlayer.hand.length == unableTurnCheck) {
+				inputPlayer.drawed = false;
+				if (this.hero.equals(inputPlayer)) {
 					this.turn = true;
-					break heroTurn;
-				}
-			} else {
-				enemyTurn: while (true) {
-					clearScreen();
-					// 적의 라이프 체크
-					if (enemyPool[stage].life <= 0) {
-						clearScreen();
-						System.out.printf("%s(이)가 죽었습니다.\n",
-								enemyPool[stage].name);
-						System.out.println();
-						TimeUtil.secondsSleep(3);
-						stage++;
-						break battle;
-					}
-					// 적 드로우
-					enemyPool[stage].drawCard(cardDeck);
-					System.out.println();
-					// 적이 카드를 사용 못하는 상황 체크
-					if (enemyPool[stage].hand.length == unableTurn(
-							enemyPool[stage])) {
-						System.out.println("적이 카드를 사용할 수 없습니다.");
-						this.turn = false;
-						TimeUtil.secondsSleep(3);
-						break enemyTurn;
-					}
-					// 적 카드 선택
-					int randomIndex = RandomUtil.random(0,
-							enemyPool[stage].hand.length - 1);
-					// 적 카드 선택 스위치문
-					switch (enemyPool[stage].hand[randomIndex]) {
-					case MISSED:
-						continue enemyTurn;
-					case BANG:
-						System.out.printf("%s(이)가 뱅!을 사용했습니다.\n",
-								enemyPool[stage].name);
-						System.out.println();
-						enemyPool[stage].useCard(enemyPool[stage], hero,
-								randomIndex);
-						break;
-					case BEER:
-						if (enemyPool[stage].life == enemyPool[stage].maxLife) {
-						} else {
-							enemyPool[stage].useCard(enemyPool[stage], hero,
-									randomIndex);
-							System.out.println();
-						}
-						continue enemyTurn;
-					case PANIC:
-						enemyPool[stage].useCard(enemyPool[stage], hero,
-								randomIndex);
-						System.out.println();
-						continue enemyTurn;
-
-					default:
-						break;
-					}
-					// 적이 드로우를 했는지 체크
-					this.enemyPool[this.stage].drawed = false;
-
-					// 적이 체력보다 많은 카드 버리기
-					if (enemyPool[stage].life < enemyPool[stage].hand.length) {
-						System.out.printf("%s(이)가 카드를 버립니다\n",
-								enemyPool[stage].name);
-						TimeUtil.secondsSleep(3);
-						for (int i = 0; i < enemyPool[stage].hand.length
-								- enemyPool[stage].life; i++) {
-							enemyPool[stage].disCard(RandomUtil.random(0,
-									enemyPool[stage].hand.length - 1));
-						}
-					}
+				} else {
 					this.turn = false;
-					break enemyTurn;
 				}
+				continue;
+			}
+
+			int selectCardNum = 0;
+			if (!turn) {
+				System.out.print("카드 선택 : ");
+				selectCardNum = ScanUtil.nextInt() - 1;
+				this.hero.useCard(this.hero, this.enemyPool[this.stage],
+						selectCardNum);
+			} else {
+				selectCardNum = RandomUtil.random(0,
+						this.enemyPool[this.stage].hand.length - 1);
+				this.enemyPool[this.stage].useCard(this.enemyPool[this.stage],
+						this.hero, selectCardNum);
+			}
+
+//			페이즈 3
+//			패에 있는 카드가 자신의 현재 라이프보다 많다면, 현재 라이프 수만큼만 카드를 소지하고 여분의 카드를 전부 버린다.
+//			라이프보다 많을 때만 카드를 버릴 수 있지, 카드가 현재 라이프 수 이하일 때는 카드를 버리고 싶다고 임의로 카드를 버리는 것은 불가능하다.
+
+			clearScreen();
+			if (inputPlayer.hand.length != 0
+					|| inputPlayer.hand.length > inputPlayer.life) {
+				for (int i = 0; i < (inputPlayer.hand.length - inputPlayer.life
+						+ 1); i++) {
+					int disCardNum = 0;
+					if (!this.turn) {
+						for (int j = 0; j < inputPlayer.hand.length; j++) {
+							System.out.printf("%d. %-6s", (j + 1),
+									inputPlayer.hand[j].name);
+						}
+						System.out.println();
+						System.out.print("버릴 카드 선택 : ");
+						disCardNum = ScanUtil.nextInt() - 1;
+					} else {
+						disCardNum = RandomUtil.random(0,
+								inputPlayer.hand.length - 1);
+					}
+					inputPlayer.disCard(disCardNum);
+				}
+			}
+//			System.out.println(inputPlayer.name + " 버리기");
+//			System.out.println(Arrays.toString(inputPlayer.hand));
+//			System.out.println(inputPlayer.hand.length);
+//			TimeUtil.secondsSleep(3);
+
+			inputPlayer.drawed = false;
+			if (this.hero.equals(inputPlayer)) {
+				this.turn = true;
+			} else {
+				this.turn = false;
 			}
 
 		}
+
 	}
 
 	public void start() {
