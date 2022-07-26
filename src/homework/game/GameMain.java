@@ -152,8 +152,7 @@ public class GameMain {
 
 					// 영웅이 체력보다 많은 카드 버리기
 					if (hero.life < hero.hand.length) {
-						System.out.printf("카드를 %d장 버려야 합니다\n",
-								hero.hand.length - hero.life);
+						System.out.println("카드를 버려야 합니다");
 						for (int i = 0; i < hero.hand.length - hero.life; i++) {
 							hero.showInfo();
 							System.out.print("카드를 선택하세요 : ");
@@ -224,10 +223,8 @@ public class GameMain {
 
 					// 적이 체력보다 많은 카드 버리기
 					if (enemyPool[stage].life < enemyPool[stage].hand.length) {
-						System.out.printf("%s(이)가 카드를 %d장 버립니다\n",
-								enemyPool[stage].name,
-								enemyPool[stage].hand.length
-										- enemyPool[stage].life);
+						System.out.printf("%s(이)가 카드를 버립니다\n",
+								enemyPool[stage].name);
 						TimeUtil.secondsSleep(3);
 						for (int i = 0; i < enemyPool[stage].hand.length
 								- enemyPool[stage].life; i++) {

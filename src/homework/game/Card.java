@@ -46,8 +46,6 @@ public enum Card {
 
 		case "강탈!":
 			int index = RandomUtil.random(0, opponent.hand.length - 1);
-			System.out.println("핸드"+opponent.hand.length);
-			System.out.println("뽑기" + index);
 			oneself.panicCard(oneself, opponent, index);
 			opponent.disCard(index);
 			System.out.printf("%s가 %s의 %s를 강탈했습니다.\n", oneself.name,
