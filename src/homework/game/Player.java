@@ -49,9 +49,11 @@ public abstract class Player {
 
 	}
 
-	public void useCard(Player oneself, Player opponent, int index) {
-		this.hand[index].activeCard(oneself, opponent, index);
+	public boolean useCard(Player oneself, Player opponent, int index) {
+		boolean repeat = false;
+		repeat = this.hand[index].activeCard(oneself, opponent, index);
 //		disCard(index);
+		return repeat;
 	}
 
 	public void addCard(Card card) {

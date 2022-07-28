@@ -102,9 +102,12 @@ public class GameMain {
 //			덱에서 카드를 2장 가져온다. 자신의 캐릭터가 카드 가져오기 관련 특수 능력이 있을 경우 특수 능력대로 카드를 가져온다.
 
 			clearScreen();
+			if (!inputPlayer.drawed) {
+				System.out.printf("%s(이)가 카드를 두 장 뽑습니다.\n", inputPlayer.name);
+				System.out.println();
+				TimeUtil.secondsSleep(3);
+			}
 			inputPlayer.drawCard(cardDeck);
-			System.out.printf("%s(이)가 카드를 두 장 뽑습니다.\n", inputPlayer.name);
-			TimeUtil.secondsSleep(3);
 			if (this.hero.equals(inputPlayer)) {
 				for (int i = 0; i < inputPlayer.hand.length; i++) {
 					System.out.printf("%d. %-6s", (i + 1),
@@ -138,16 +141,20 @@ public class GameMain {
 			}
 
 			int selectCardNum = 0;
+			boolean repeat = false;
 			if (!turn) {
 				System.out.print("카드 선택 : ");
-				selectCardNum = ScanUtil.nextInt() - 1;
-				this.hero.useCard(this.hero, this.enemyPool[this.stage],
-						selectCardNum);
+				selectCardNum = ScanUtil.nextInt();
+				repeat = this.hero.useCard(this.hero,
+						this.enemyPool[this.stage], selectCardNum - 1);
 			} else {
 				selectCardNum = RandomUtil.random(0,
 						this.enemyPool[this.stage].hand.length - 1);
-				this.enemyPool[this.stage].useCard(this.enemyPool[this.stage],
-						this.hero, selectCardNum);
+				repeat = this.enemyPool[this.stage].useCard(
+						this.enemyPool[this.stage], this.hero, selectCardNum);
+			}
+			if (repeat) {
+				continue;
 			}
 
 //			페이즈 3
@@ -166,6 +173,9 @@ public class GameMain {
 									inputPlayer.hand[j].name);
 						}
 						System.out.println();
+						System.out.println(inputPlayer.name + "의 체력 : "
+								+ inputPlayer.life);
+						System.out.println();
 						System.out.print("버릴 카드 선택 : ");
 						disCardNum = ScanUtil.nextInt() - 1;
 					} else {
@@ -175,10 +185,18 @@ public class GameMain {
 					inputPlayer.disCard(disCardNum);
 				}
 			}
+			if (this.hero.equals(inputPlayer)) {
 //			System.out.println(inputPlayer.name + " 버리기");
-//			System.out.println(Arrays.toString(inputPlayer.hand));
+				System.out.println(inputPlayer.name + "의 남은 카드");
+				System.out.println();
+				for (int i = 0; i < inputPlayer.hand.length; i++) {
+					System.out.printf("%d. %-6s", (i + 1),
+							inputPlayer.hand[i].name);
+				}
+				System.out.println();
 //			System.out.println(inputPlayer.hand.length);
-//			TimeUtil.secondsSleep(3);
+				TimeUtil.secondsSleep(3);
+			}
 
 			inputPlayer.drawed = false;
 			if (this.hero.equals(inputPlayer)) {
@@ -211,17 +229,78 @@ public class GameMain {
 				TimeUtil.secondsSleep(3);
 				break game;
 			}
-			System.out.println("1. 내 정보    2. 전투    0. 종료");
+			System.out.println("1. 게임 방법    2. 내 정보    3. 전투    0. 종료");
 			System.out.println();
 			System.out.print(">>> ");
 			input = ScanUtil.nextInt();
 			switch (input) {
 			case 1:
 				clearScreen();
+				System.out.println("당신은 보안관으로서");
+				System.out.println();
+				System.out.println("네 명의 서부의 무법자와 싸우게 됩니다.");
+				System.out.println();
+				TimeUtil.secondsSleep(5);
+				clearScreen();
+				System.out.println("자신의 턴에");
+				System.out.println();
+				System.out.println("카드 두 장을 뽑고 시작합니다.");
+				System.out.println();
+				TimeUtil.secondsSleep(5);
+				clearScreen();
+				System.out.println("뱅! 카드는 상대방을");
+				System.out.println();
+				System.out.println("공격하는 카드로");
+				System.out.println();
+				TimeUtil.secondsSleep(5);
+				System.out.println("자신의 턴에 한 장만 쓸 수");
+				System.out.println();
+				System.out.println("있습니다.");
+				System.out.println();
+				TimeUtil.secondsSleep(5);
+				clearScreen();
+				System.out.println("빗나감! 카드는 상대방의 공격을");
+				System.out.println();
+				System.out.println("회피하는 카드로 자신의 턴에는");
+				System.out.println();
+				System.out.println("사용할 수 없습니다.");
+				System.out.println();
+				TimeUtil.secondsSleep(5);
+				clearScreen();
+				System.out.println("맥주 카드는 체력을 하나");
+				System.out.println();
+				System.out.println("올려줍니다.");
+				System.out.println();
+				TimeUtil.secondsSleep(5);
+				clearScreen();
+				System.out.println("강탈! 카드는 상대방의 카드를");
+				System.out.println();
+				System.out.println("한 장 뺏어옵니다.");
+				System.out.println();
+				TimeUtil.secondsSleep(5);
+				clearScreen();
+				System.out.println("뱅! 카드 이외에는");
+				System.out.println();
+				System.out.println("카드를 사용하지 않고");
+				System.out.println();
+				System.out.println("보존할 수 있습니다.");
+				System.out.println();
+				TimeUtil.secondsSleep(5);
+				clearScreen();
+				System.out.println("자신의 턴이 끝나면");
+				System.out.println();
+				System.out.println("자신의 체력만큼의 ");
+				System.out.println();
+				System.out.println("카드수를 남기고 버리게 됩니다.");
+				System.out.println();
+				TimeUtil.secondsSleep(5);
+				break;
+			case 2:
+				clearScreen();
 				hero.showInfo();
 				System.out.println();
 				break;
-			case 2:
+			case 3:
 				clearScreen();
 				battle();
 				break;
