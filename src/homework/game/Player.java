@@ -2,7 +2,7 @@ package homework.game;
 
 import java.util.Arrays;
 
-public abstract class Player {
+public class Player {
 
 	String name;
 	int life;
